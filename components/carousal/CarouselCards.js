@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Text, ActivityIndicator} from 'react-native';
+import {View, StyleSheet, Text, ActivityIndicator, Button} from 'react-native';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import CarouselCardItem, {SLIDER_WIDTH, ITEM_WIDTH} from './CarouselCardItem';
 import useApiCall from './ApiCall';
@@ -49,9 +49,20 @@ const CarouselCards = () => {
     );
   }
   if (error) {
-    return <Text>Error</Text>;
+    return (
+      <View style={styles.container}>
+        <Text>
+          There was an error in getting the matches data. Please check your
+          network settings
+        </Text>
+        <Button
+          title="Visit Matches Data"
+          onPress={() => navigation.navigate('Match_Details')}
+        />
+      </View>
+    );
   }
-  if (data) {
+  if (data.getFRCHomePage.upcomingmatches.length > 0) {
     return (
       <View style={styles.carousalContainer}>
         <Carousel
@@ -85,6 +96,16 @@ const CarouselCards = () => {
       </View>
     );
   }
+
+  return (
+    <View style={styles.container}>
+      <Text>Currently There Is No Upcoming Matches</Text>
+      <Button
+        title="Visit Matches Data"
+        onPress={() => navigation.navigate('Match_Details')}
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -104,6 +125,16 @@ const styles = StyleSheet.create({
   activityIndicator: {
     height: '50%',
     justifyContent: 'center',
+  },
+  container: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '90%',
+    padding: 20,
+    margin: 10,
+    alignSelf: 'center',
   },
 });
 export default CarouselCards;

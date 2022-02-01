@@ -12,6 +12,7 @@ export const SLIDER_WIDTH = Dimensions.get('window').width + 100;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
 
 const CarouselCardItem = ({index, item, navigation}) => {
+  console.log('0',item)
   const matchIndex = index;
   const matchData = item;
   return (

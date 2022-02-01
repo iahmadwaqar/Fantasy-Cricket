@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   StyleSheet,
@@ -10,13 +10,14 @@ import {
 } from 'react-native';
 
 function MatchDetails({navigation, route}) {
-  const updateTitle = () => navigation.setOptions({title: 'Updated!'});
+  const [title, setTitle] = useState('STATE');
+  useEffect(() => navigation.setOptions({title: title}), [navigation, title]);
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text>Home {route.params?.matchID}</Text>
       <Button
         title={'Click Here To Update Header Title Dynamically'}
-        onPress={updateTitle}
+        onPress={() => setTitle('NEW')}
       />
       <Button
         title="Go to Details"
