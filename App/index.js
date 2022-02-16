@@ -11,8 +11,11 @@ import {
 import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {Provider as PaperProvider} from 'react-native-paper';
+
 import CarouselCards from './components/carousal/CarouselCards';
 import MatchDetails from './screens/MatchDetails';
+// import RootNavigator from './screens/Drawer';
 
 const client = new ApolloClient({
   uri: 'https://apiv2.cricket.com/cricket',
@@ -23,29 +26,20 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <PaperProvider>
       <ApolloProvider client={client}>
-        <Stack.Navigator
-          initialRouteName="Homer"
-          screenOptions={{
-            headerTintColor: '#fff',
-            headerStyle: {backgroundColor: 'lightblue'},
-          }}>
-          <Stack.Screen
-            name="Home"
-            options={{
-              title: 'Fantasy Cricket',
-            }}
-            component={CarouselCards}
-          />
-          <Stack.Screen
-            name="Match_Details"
-            options={{title: 'Match Details'}}
-            component={MatchDetails}
-          />
-        </Stack.Navigator>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name="Home" component={CarouselCards} />
+            <Stack.Screen
+              name="Match_Details"
+              options={{title: 'Match Details'}}
+              component={MatchDetails}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
       </ApolloProvider>
-    </NavigationContainer>
+    </PaperProvider>
   );
 }
 
