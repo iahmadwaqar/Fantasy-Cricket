@@ -1,8 +1,9 @@
 import React, {useEffect} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import {TouchableOpacity, Text, View, Button} from 'react-native';
+import {TouchableOpacity, Text, View} from 'react-native';
+
+import {Button, Caption} from 'react-native-paper';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,11 +37,19 @@ const Home = ({navigation}) => {
   }, []);
 
   return (
-    <View style={{backgroundColor: 'red'}}>
-      <Text>{count}</Text>
-      <Button onPress={() => clearInterval(clear)} title="Clear" />
-      <Button onPress={() => setCount(count + 1)} title="Increment" />
-      <Button onPress={() => navigation.navigate('Options')} title="Nav" />
+    <View>
+      <Caption>{count}</Caption>
+      <Button
+        style={{marginVertical: 5, width: '70%', alignSelf: 'center'}}
+        icon="camera"
+        mode="contained"
+        onPress={() => clearInterval(clear)}>
+        Press me
+      </Button>
+      <Button mode="outlined" onPress={() => setCount(count + 1)}>
+        Increament
+      </Button>
+      <Button onPress={() => navigation.navigate('Options')}>navigate</Button>
     </View>
   );
 };
@@ -75,9 +84,11 @@ const HomeStackNavigation = () => {
       <Stack.Screen
         name="Home"
         component={Home}
-        options={{
-          headerShown: false,
-        }}
+        options={
+          {
+            //   headerShown: false,
+          }
+        }
       />
       <Stack.Screen
         name="Options"

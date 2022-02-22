@@ -8,7 +8,6 @@ import {
   StatusBar,
   TouchableOpacity,
 } from 'react-native';
-// import {Entypo} from '@expo/vector-icons';
 import {format} from 'date-fns';
 
 import colors from '../constants/colors';
