@@ -16,9 +16,10 @@ const CarouselCardItem = ({index, item, navigation}) => {
   const matchData = item;
   return (
     <TouchableWithoutFeedback
-      onPress={() =>
-        navigation.navigate('Match_Details', {matchID: matchData.matchID})
-      }>
+      onPress={() => {
+        console.log('Match Data: ', navigation);
+        navigation.navigate('Match_Details', {matchID: matchData.matchID});
+      }}>
       <View style={styles.container} key={matchIndex}>
         <Text numberOfLines={1} style={styles.matchName}>
           {matchData.matchName}

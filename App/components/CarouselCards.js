@@ -2,9 +2,10 @@ import React from 'react';
 import {View, StyleSheet, Text, ActivityIndicator, Button} from 'react-native';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import CarouselCardItem, {SLIDER_WIDTH, ITEM_WIDTH} from './CarouselCardItem';
-import useApiCall from '../../util/ApiCall';
+import useApiCall from '../util/ApiCall';
 import {gql} from '@apollo/client';
 import {useNavigation} from '@react-navigation/native';
+import colors from '../constants/colors';
 
 const CRICKET_MATCHES = gql`
   query getFRCHomePage {
@@ -35,8 +36,7 @@ const CRICKET_MATCHES = gql`
   }
 `;
 
-const CarouselCards = () => {
-  const navigation = useNavigation();
+const CarouselCards = ({navigation}) => {
   const {error, loading, data} = useApiCall(CRICKET_MATCHES);
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
@@ -110,7 +110,7 @@ const CarouselCards = () => {
 
 const styles = StyleSheet.create({
   carousalContainer: {
-    backgroundColor: '#ddd',
+    backgroundColor: colors.grey,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
