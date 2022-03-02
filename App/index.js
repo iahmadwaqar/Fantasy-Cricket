@@ -3,7 +3,8 @@ import React from 'react';
 import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
 
 import PaperProviderWrapper from './config/Theming';
-import Navigation from './config/Navigation';
+import ReduxProviderWrapper from './config/Redux';
+import Navigation from './navigation/Navigation';
 
 const client = new ApolloClient({
   uri: 'https://apiv2.cricket.com/cricket',
@@ -13,9 +14,11 @@ const client = new ApolloClient({
 const App = () => {
   return (
     <ApolloProvider client={client}>
-      <PaperProviderWrapper>
-        <Navigation />
-      </PaperProviderWrapper>
+      <ReduxProviderWrapper>
+        <PaperProviderWrapper>
+          <Navigation />
+        </PaperProviderWrapper>
+      </ReduxProviderWrapper>
     </ApolloProvider>
   );
 };

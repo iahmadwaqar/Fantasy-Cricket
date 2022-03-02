@@ -1,17 +1,51 @@
-import React, {useState} from 'react';
-import {Dimensions, StyleSheet, View, StatusBar} from 'react-native';
+import React from 'react';
+import {Dimensions, StyleSheet, Platform, View} from 'react-native';
+import {Button, Text, Appbar, FAB} from 'react-native-paper';
+import {useDispatch, useSelector} from 'react-redux';
 
 import CarouselCard from '../components/CarouselCards';
 
 import colors from '../constants/colors';
 
+const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
+
+const AppBarComponent = () => (
+  <Appbar.Header style={{backgroundColor: 'tomato'}}>
+    <Appbar.Content title="Title" subtitle={'Subtitle'} />
+    <Appbar.Action icon="magnify" onPress={() => {}} />
+    <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+  </Appbar.Header>
+);
+
 const Home = ({navigation, route}) => {
-  const [text, setText] = useState('');
+  const dispatch = useDispatch();
+  const counter = useSelector(state => state.counter);
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.grey} />
+      <AppBarComponent />
       <CarouselCard navigation={navigation} />
+      <FAB
+        style={{
+          position: 'absolute',
+          margin: 20,
+          right: 0,
+          bottom: 0,
+        }}
+        label="Add"
+        icon="headset"
+        onPress={() => console.log('Pressed')}
+      />
+      <View style={styles.container}>
+        <Text>This is paper {counter} text</Text>
+        <Button
+          mode="contained"
+          icon="car"
+          style={{alignSelf: 'center'}}
+          onPress={() => dispatch({type: 'INCREMENT'})}>
+          Increment
+        </Button>
+      </View>
     </View>
   );
 }; // end of Home

@@ -1,10 +1,10 @@
 import React from 'react';
-import {View, StyleSheet, Text, ActivityIndicator, Button} from 'react-native';
+import {View, StyleSheet, Text, ActivityIndicator} from 'react-native';
+import {Button} from 'react-native-paper';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import CarouselCardItem, {SLIDER_WIDTH, ITEM_WIDTH} from './CarouselCardItem';
 import useApiCall from '../util/ApiCall';
 import {gql} from '@apollo/client';
-import {useNavigation} from '@react-navigation/native';
 import colors from '../constants/colors';
 
 const CRICKET_MATCHES = gql`
@@ -56,9 +56,13 @@ const CarouselCards = ({navigation}) => {
           network settings
         </Text>
         <Button
-          title="Visit Matches Data"
-          onPress={() => navigation.navigate('Match_Details')}
-        />
+          icon="screen"
+          mode="contained"
+          dark
+          loading
+          onPress={() => navigation.navigate('Match_Details')}>
+          Press me
+        </Button>
       </View>
     );
   }
@@ -96,14 +100,21 @@ const CarouselCards = ({navigation}) => {
       </View>
     );
   }
-
   return (
     <View style={styles.container}>
       <Text>Currently There Is No Upcoming Matches</Text>
       <Button
-        title="Visit Matches Data"
-        onPress={() => navigation.navigate('Match_Details')}
-      />
+        icon="camera"
+        mode="contained"
+        loading={true}
+        dark={true}
+        raised
+        theme={{colors: {primary: colors.tomato}}}
+        onPress={() => {
+          console.log(colors);
+        }}>
+        Press me
+      </Button>
     </View>
   );
 };
@@ -127,7 +138,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.grey,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
