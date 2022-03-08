@@ -13,9 +13,9 @@ function BottomTabNavigation() {
   return (
     <Tab.Navigator
       initialRouteName="Feed"
-      activeColor={colors.lightGreen}
+      activeColor={colors.accent}
       inactiveColor={colors.black}
-      barStyle={{backgroundColor: colors.tomato}}>
+      barStyle={{backgroundColor: colors.primary}}>
       <Tab.Screen
         name="Feed"
         component={HomeStackNavigation}

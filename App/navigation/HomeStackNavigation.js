@@ -3,7 +3,8 @@ import {TouchableOpacity, Text} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import Home from '../screens/Home';
-import MatchDetails from '../screens/MatchDetails';
+import MatchDetails from '../screens/MatchDetail';
+import NewsDetail from '../screens/NewsDetail';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,20 +14,8 @@ const HomeStackNavigation = () => {
       screenOptions={{headerShown: false}}
       initialRouteName="Home">
       <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen
-        name="Home2"
-        component={Home}
-        options={
-          {
-            //   headerShown: false,
-          }
-        }
-      />
-      <Stack.Screen
-        name="Match_Details"
-        component={MatchDetails}
-        options={{animation:'fade'}}
-      />
+      <Stack.Screen name="NewsDetail" component={NewsDetail} />
+      <Stack.Screen name="MatchDetail" component={MatchDetails} />
     </Stack.Navigator>
   );
 };

@@ -1,13 +1,15 @@
 import React from 'react';
-import {View, StyleSheet, Text, ActivityIndicator} from 'react-native';
-import {Button} from 'react-native-paper';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import CarouselCardItem, {SLIDER_WIDTH, ITEM_WIDTH} from './CarouselCardItem';
-import useApiCall from '../util/ApiCall';
 import {gql} from '@apollo/client';
-import colors from '../constants/colors';
 
-const CRICKET_MATCHES = gql`
+import {View, StyleSheet, Linking} from 'react-native';
+import {Button, ActivityIndicator, Text} from 'react-native-paper';
+
+import CarouselCardItem, {SLIDER_WIDTH, ITEM_WIDTH} from './CarouselCardItem';
+import useGrapthQLApiCall from '../../../util/ApiCall';
+import colors from '../../../constants/colors';
+
+const CRICKET_MATCHES_QUERY = gql`
   query getFRCHomePage {
     getFRCHomePage {
       upcomingmatches {
@@ -37,31 +39,29 @@ const CRICKET_MATCHES = gql`
 `;
 
 const CarouselCards = ({navigation}) => {
-  const {error, loading, data} = useApiCall(CRICKET_MATCHES);
+  const {error, loading, data} = useGrapthQLApiCall(CRICKET_MATCHES_QUERY);
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
 
   if (loading) {
     return (
-      <View style={styles.activityIndicator}>
+      <View style={styles.loadingContainerStyle}>
         <ActivityIndicator size={'large'} />
       </View>
     );
   }
   if (error) {
     return (
-      <View style={styles.container}>
+      <View style={styles.errorContainerStyle}>
         <Text>
           There was an error in getting the matches data. Please check your
           network settings
         </Text>
         <Button
-          icon="screen"
+          style={{marginVertical: 20}}
           mode="contained"
-          dark
-          loading
-          onPress={() => navigation.navigate('Match_Details')}>
-          Press me
+          onPress={() => Linking.openSettings()}>
+          Go To Settings
         </Button>
       </View>
     );
@@ -85,10 +85,11 @@ const CarouselCards = ({navigation}) => {
             setIndex(index);
           }}
           useScrollView={true}
-          loop={true}
-          autoplay={true}
+          // loop={true}
+          // autoplay={true}
         />
         <Pagination
+          containerStyle={styles.paginationContainerStyle}
           dotsLength={data.getFRCHomePage.upcomingmatches.length}
           activeDotIndex={index}
           carouselRef={isCarousel}
@@ -101,27 +102,15 @@ const CarouselCards = ({navigation}) => {
     );
   }
   return (
-    <View style={styles.container}>
-      <Text>Currently There Is No Upcoming Matches</Text>
-      <Button
-        icon="camera"
-        mode="contained"
-        loading={true}
-        dark={true}
-        raised
-        theme={{colors: {primary: colors.tomato}}}
-        onPress={() => {
-          console.log(colors);
-        }}>
-        Press me
-      </Button>
+    <View style={styles.noDataContainerStyle}>
+      <Text>Currently there are no live matches</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   carousalContainer: {
-    backgroundColor: colors.grey,
+    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
@@ -129,23 +118,36 @@ const styles = StyleSheet.create({
   paginationDotStyle: {
     width: 10,
     height: 5,
-    borderRadius: 5,
-    marginHorizontal: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.92)',
   },
-  activityIndicator: {
-    height: '50%',
+  paginationContainerStyle: {
+    paddingVertical: 10,
+  },
+  loadingContainerStyle: {
+    height: '25%',
     justifyContent: 'center',
   },
-  container: {
-    backgroundColor: colors.grey,
+  errorContainerStyle: {
+    backgroundColor: colors.accent,
+    height: '20%',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '90%',
-    padding: 20,
-    margin: 10,
     alignSelf: 'center',
+    width: '95%',
+    padding: 30,
+    margin: 10,
+  },
+  noDataContainerStyle: {
+    backgroundColor: colors.accent,
+    height: '20%',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    width: '95%',
+    padding: 30,
+    margin: 10,
   },
 });
 export default CarouselCards;

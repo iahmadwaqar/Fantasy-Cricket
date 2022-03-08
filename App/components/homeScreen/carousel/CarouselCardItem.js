@@ -1,30 +1,27 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  Image,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import {View, StyleSheet, Dimensions, Image} from 'react-native';
+import {Text, TouchableRipple} from 'react-native-paper';
 
-export const SLIDER_WIDTH = Dimensions.get('window').width + 100;
+import colors from '../../../constants/colors';
+
+export const SLIDER_WIDTH = Dimensions.get('window').width + 120;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
 
 const CarouselCardItem = ({index, item, navigation}) => {
+  console.log('item', item);
   const matchIndex = index;
   const matchData = item;
   return (
-    <TouchableWithoutFeedback
+    <TouchableRipple
       onPress={() => {
-        console.log('Match Data: ', navigation);
-        navigation.navigate('Match_Details', {matchID: matchData.matchID});
+        navigation.navigate('MatchDetail', {
+          matchID: matchData.matchID,
+          title: `${matchData.homeTeamShortName} vs ${matchData.awayTeamShortName}`,
+        });
       }}>
       <View style={styles.container} key={matchIndex}>
-        <Text numberOfLines={1} style={styles.matchName}>
-          {matchData.matchName}
-        </Text>
-        <View style={{flexDirection: 'row', marginLeft: 10}}>
+        <Text style={styles.matchName}>{matchData.matchName}</Text>
+        <View style={styles.matchTimeAndVenueContainer}>
           <Text style={styles.matchTimeAndVenue}>{matchData.matchNumber},</Text>
           <Text style={styles.matchTimeAndVenue}>{matchData.matchType},</Text>
           <Text style={styles.matchTimeAndVenue}>AT {matchData.city},</Text>
@@ -36,7 +33,7 @@ const CarouselCardItem = ({index, item, navigation}) => {
         </View>
         <View style={styles.horizontalLineView} />
         <View style={{paddingTop: 15}}>
-          <View style={styles.teamNameAndFlagView}>
+          <View style={styles.teamNameAndFlagContainer}>
             <Image
               source={{
                 uri: `https://images.cricket.com/teams/${matchData.homeTeamID}_flag_safari.png`,
@@ -48,7 +45,7 @@ const CarouselCardItem = ({index, item, navigation}) => {
             </Text>
           </View>
 
-          <View style={styles.teamNameAndFlagView}>
+          <View style={styles.teamNameAndFlagContainer}>
             <Image
               source={{
                 uri: `https://images.cricket.com/teams/${matchData.awayTeamID}_flag_safari.png`,
@@ -61,46 +58,53 @@ const CarouselCardItem = ({index, item, navigation}) => {
           </View>
         </View>
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableRipple>
   );
 };
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.accent,
     borderRadius: 15,
     width: ITEM_WIDTH,
     paddingBottom: 10,
   },
+  matchTimeAndVenueContainer: {
+    flexDirection: 'row',
+    marginLeft: 10,
+  },
   horizontalLineView: {
-    borderBottomColor: '#ddd',
+    borderBottomColor: colors.grey,
     borderBottomWidth: 1,
     marginLeft: 10,
     marginRight: 10,
   },
   image: {
-    width: 55,
-    height: 30,
+    width: 60,
+    height: 35,
     borderRadius: 5,
+    marginRight: 10,
+    borderColor: colors.grey,
+    borderWidth: 1,
   },
   matchName: {
-    color: '#222',
+    color: colors.text,
     fontSize: 12,
     fontWeight: 'bold',
     padding: 10,
   },
   matchTimeAndVenue: {
-    color: '#555',
+    color: colors.textLight,
     fontSize: 12,
     paddingRight: 5,
   },
-  teamNameAndFlagView: {
+  teamNameAndFlagContainer: {
     flexDirection: 'row',
     marginLeft: 10,
     paddingBottom: 10,
     alignItems: 'center',
   },
   teamName: {
-    color: '#555',
+    color: colors.textLight,
     fontSize: 14,
   },
 });

@@ -1,51 +1,19 @@
-import React from 'react';
-import {Dimensions, StyleSheet, Platform, View} from 'react-native';
-import {Button, Text, Appbar, FAB} from 'react-native-paper';
-import {useDispatch, useSelector} from 'react-redux';
+import React, {useEffect} from 'react';
+import {Dimensions, StyleSheet, ScrollView, View} from 'react-native';
+import {Button, Text} from 'react-native-paper';
+import AppBarComponent from '../components/AppBar';
 
-import CarouselCard from '../components/CarouselCards';
+import CarouselCard from '../components/homeScreen/carousel/CarouselCards';
+import News from '../components/homeScreen/News';
 
 import colors from '../constants/colors';
 
-const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
-
-const AppBarComponent = () => (
-  <Appbar.Header style={{backgroundColor: 'tomato'}}>
-    <Appbar.Content title="Title" subtitle={'Subtitle'} />
-    <Appbar.Action icon="magnify" onPress={() => {}} />
-    <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
-  </Appbar.Header>
-);
-
 const Home = ({navigation, route}) => {
-  const dispatch = useDispatch();
-  const counter = useSelector(state => state.counter);
-
   return (
     <View style={styles.container}>
-      <AppBarComponent />
+      <AppBarComponent navigation={navigation} route={route} />
       <CarouselCard navigation={navigation} />
-      <FAB
-        style={{
-          position: 'absolute',
-          margin: 20,
-          right: 0,
-          bottom: 0,
-        }}
-        label="Add"
-        icon="headset"
-        onPress={() => console.log('Pressed')}
-      />
-      <View style={styles.container}>
-        <Text>This is paper {counter} text</Text>
-        <Button
-          mode="contained"
-          icon="car"
-          style={{alignSelf: 'center'}}
-          onPress={() => dispatch({type: 'INCREMENT'})}>
-          Increment
-        </Button>
-      </View>
+      <News navigation={navigation} />
     </View>
   );
 }; // end of Home
@@ -54,7 +22,7 @@ const screen = Dimensions.get('window'); // get the screen dimensions
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: colors.tomato,
+    backgroundColor: colors.background,
   },
   content: {
     // justifyContent: 'center',

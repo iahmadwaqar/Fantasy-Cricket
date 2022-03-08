@@ -9,17 +9,20 @@ const theme = {
   roundness: 5,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#3db',
-    accent: '#f0f',
-    background: '#000',
-    text: '#0ff',
+    primary: colors.primary,
+    accent: colors.accent,
+    backgroundColor: colors.background,
+    surface: colors.surface,
+    text: colors.text,
+    placeholder: colors.placeholder,
+    disabled: colors.disabled,
   },
 };
 
 const PaperProviderWrapper = ({children}) => {
   return (
     <PaperProvider theme={theme}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.tomato} />
+      <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
       {children}
     </PaperProvider>
   );
