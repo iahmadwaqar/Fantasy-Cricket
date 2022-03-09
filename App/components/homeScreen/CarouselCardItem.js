@@ -2,13 +2,12 @@ import React from 'react';
 import {View, StyleSheet, Dimensions, Image} from 'react-native';
 import {Text, TouchableRipple} from 'react-native-paper';
 
-import colors from '../../../constants/colors';
+import colors from '../../constants/colors';
 
 export const SLIDER_WIDTH = Dimensions.get('window').width + 120;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
 
 const CarouselCardItem = ({index, item, navigation}) => {
-  console.log('item', item);
   const matchIndex = index;
   const matchData = item;
   return (

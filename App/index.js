@@ -13,13 +13,13 @@ const client = new ApolloClient({
 
 const App = () => {
   return (
-    <ApolloProvider client={client}>
-      <ReduxProviderWrapper>
+    <ReduxProviderWrapper>
+      <ApolloProvider client={client}>
         <PaperProviderWrapper>
           <Navigation />
         </PaperProviderWrapper>
-      </ReduxProviderWrapper>
-    </ApolloProvider>
+      </ApolloProvider>
+    </ReduxProviderWrapper>
   );
 };
 

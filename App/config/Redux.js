@@ -2,16 +2,14 @@ import React from 'react';
 import {createStore} from 'redux';
 import {Provider} from 'react-redux';
 
-const initialValue = {
-  counter: 0,
-};
+const initialValue = {};
 
 const reducer = (state = initialValue, action) => {
   switch (action.type) {
-    case 'INCREMENT':
+    case 'PLAYERS_LIST':
       return {
         ...state,
-        counter: state.counter + 1,
+        PlayersData: action.payload,
       };
     case 'DECREMENT':
       return {

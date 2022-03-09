@@ -1,45 +1,20 @@
 import React from 'react';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import {gql} from '@apollo/client';
+import {gql, useQuery} from '@apollo/client';
 
 import {View, StyleSheet, Linking} from 'react-native';
 import {Button, ActivityIndicator, Text} from 'react-native-paper';
 
 import CarouselCardItem, {SLIDER_WIDTH, ITEM_WIDTH} from './CarouselCardItem';
-import useGrapthQLApiCall from '../../../util/ApiCall';
-import colors from '../../../constants/colors';
+import colors from '../../constants/colors';
+import upcomingMatchesQuery from '../../constants/queries/upcomingMatchesQuery';
 
 const CRICKET_MATCHES_QUERY = gql`
-  query getFRCHomePage {
-    getFRCHomePage {
-      upcomingmatches {
-        matchID
-        matchName
-        matchStatus
-        statusMessage
-        isLiveCriclyticsAvailable
-        homeTeamID
-        awayTeamID
-        homeTeamShortName
-        awayTeamShortName
-        matchNumber
-        toss
-        matchDateTimeGMT
-        tourName
-        matchType
-        city
-        matchScore {
-          teamShortName
-          teamID
-          teamFullName
-        }
-      }
-    }
-  }
+  ${upcomingMatchesQuery}
 `;
 
 const CarouselCards = ({navigation}) => {
-  const {error, loading, data} = useGrapthQLApiCall(CRICKET_MATCHES_QUERY);
+  const {error, loading, data} = useQuery(CRICKET_MATCHES_QUERY);
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
 

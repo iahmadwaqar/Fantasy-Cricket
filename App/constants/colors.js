@@ -7,6 +7,7 @@ export default {
   surface: '#ffdac6',
   text: '#343434',
   textLight: '#8f8f8f',
+  textWhite: '#fff',
   placeholder: '#a5a5a5',
   disabled: '#a5a5a5',
   divider: '#E2E2E2',
