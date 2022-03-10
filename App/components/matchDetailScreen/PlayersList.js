@@ -2,12 +2,13 @@ import React, {useEffect, useState, useRef} from 'react';
 import {useSelector} from 'react-redux';
 
 import Animated, {StretchInY, StretchInX} from 'react-native-reanimated';
-import {View, ScrollView} from 'react-native';
+import {StyleSheet, ScrollView} from 'react-native';
 import {List, Text, Avatar, Button} from 'react-native-paper';
 
 import colors from '../../constants/colors';
 
 const PlayersList = ({navigation}) => {
+  console.log('Players List Screen');
   const playersData = useSelector(state => state.PlayersData);
   const playersList = playersData?.recentForm;
   const [isFocused, setIsFocused] = useState(false);
@@ -92,7 +93,7 @@ const AccordionListItem = ({navigation, playerId, PlayerName}) => {
       <List.Item
         title={PlayerName}
         key={playerId}
-        style={{backgroundColor: colors.accent, borderRadius: 10, margin: 5}}
+        style={styles.listItem}
         left={() => (
           <Avatar.Image size={44} source={{uri: 'https://picsum.photos/200'}} />
         )}
@@ -101,5 +102,13 @@ const AccordionListItem = ({navigation, playerId, PlayerName}) => {
     </Animated.View>
   );
 };
+
+const styles = StyleSheet.create({
+  listItem: {
+    backgroundColor: colors.accent,
+    borderRadius: 10,
+    margin: 5,
+  },
+});
 
 export default PlayersList;

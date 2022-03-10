@@ -10,6 +10,7 @@ import colors from '../constants/colors';
 import matchDetailQuery from '../constants/queries/matchDetailQuery';
 
 import PlayersList from '../components/matchDetailScreen/PlayersList';
+import TeamSelection from '../components/matchDetailScreen/TeamSelection';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -18,7 +19,7 @@ const MATCH_DETAILS_QUERY = gql`
 `;
 
 const MatchDetail = ({navigation, route}) => {
-  console.log('MatchDetail');
+  console.log('Match Details Screen');
 
   const timeRef = useRef(0);
 
@@ -48,7 +49,7 @@ const MatchDetail = ({navigation, route}) => {
   });
 
   if (loading) {
-    console.log('Loaidng');
+    // console.log('Loaidng');
     return <Text>Loading</Text>;
   }
 
@@ -58,7 +59,7 @@ const MatchDetail = ({navigation, route}) => {
   }
 
   if (data) {
-    console.log('data');
+    // console.log('data');
     dispatch({
       type: 'PLAYERS_LIST',
       payload: data.playerHub,
@@ -70,6 +71,7 @@ const MatchDetail = ({navigation, route}) => {
       <AppBarComponent navigation={navigation} route={route} />
       <Tab.Navigator
         screenOptions={{
+          lazy: true,
           tabBarLabelStyle: {fontWeight: '500', color: colors.textWhite},
           tabBarScrollEnabled: true,
           tabBarItemStyle: {width: 130},
@@ -103,7 +105,7 @@ const MatchDetail = ({navigation, route}) => {
         <Tab.Screen
           name="FantasyPicks"
           options={{tabBarLabel: 'Fantasy Picks'}}
-          component={MatchDetails}
+          component={TeamSelection}
         />
         <Tab.Screen
           name="PlayersList"
@@ -124,22 +126,5 @@ const MatchDetail = ({navigation, route}) => {
     </>
   );
 };
-function MatchDetails({navigation, route}) {
-  return (
-    <>
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <Text style={{color: 'red'}}>Home {route.params?.matchID}</Text>
-        <Text style={{color: 'red'}}>Home {route.params?.title}</Text>
-        {/* <Button
-          title={'Click Here To Update Header Title Dynamically'}
-          onPress={() => setTitle('NEW')}
-        /> */}
-        <Button
-          title="Go to Details"
-          onPress={() => navigation.navigate('NewsDetail')}
-        />
-      </View>
-    </>
-  );
-}
+
 export default MatchDetail;

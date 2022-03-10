@@ -12,6 +12,7 @@ export default {
   disabled: '#a5a5a5',
   divider: '#E2E2E2',
   border: '#E2E2E2',
+  shadow: '#000',
 
   white: '#fff',
   black: '#000',

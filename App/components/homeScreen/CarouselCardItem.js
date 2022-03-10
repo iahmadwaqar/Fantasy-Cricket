@@ -62,10 +62,19 @@ const CarouselCardItem = ({index, item, navigation}) => {
 };
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.accent,
+    backgroundColor: colors.background,
     borderRadius: 15,
     width: ITEM_WIDTH,
     paddingBottom: 10,
+    shadowColor: colors.shadow,
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+    elevation: 6,
+    marginVertical: 5,
   },
   matchTimeAndVenueContainer: {
     flexDirection: 'row',
