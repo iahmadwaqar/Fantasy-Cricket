@@ -10,33 +10,6 @@ import {
 
 import colors from '../../constants/colors';
 
-const NewsItem = ({navigation, title, children}) => {
-  return (
-    <TouchableRipple
-      onPress={() =>
-        navigation.navigate('NewsDetail', {
-          title: title,
-          id: Math.random(),
-        })
-      }>
-      <View style={styles.newsContainer}>
-        <View style={styles.imageContainer}>
-          <Image
-            source={{uri: 'https://picsum.photos/700'}}
-            style={styles.image}
-          />
-        </View>
-        <View style={styles.contentContainer}>
-          <Title style={styles.newsTitle}>{title}</Title>
-          <Text numberOfLines={4} style={styles.newsDescription}>
-            {children}
-          </Text>
-        </View>
-      </View>
-    </TouchableRipple>
-  );
-};
-
 const News = ({navigation}) => {
   return (
     <ScrollView>
@@ -65,6 +38,33 @@ const News = ({navigation}) => {
         eget nunc efficitur efficitur.
       </NewsItem>
     </ScrollView>
+  );
+};
+
+const NewsItem = ({navigation, title, children}) => {
+  return (
+    <TouchableRipple
+      onPress={() =>
+        navigation.navigate('NewsDetail', {
+          title: title,
+          id: Math.random(),
+        })
+      }>
+      <View style={styles.newsContainer}>
+        <View style={styles.imageContainer}>
+          <Image
+            source={{uri: 'https://picsum.photos/700'}}
+            style={styles.image}
+          />
+        </View>
+        <View style={styles.contentContainer}>
+          <Title style={styles.newsTitle}>{title}</Title>
+          <Text numberOfLines={4} style={styles.newsDescription}>
+            {children}
+          </Text>
+        </View>
+      </View>
+    </TouchableRipple>
   );
 };
 

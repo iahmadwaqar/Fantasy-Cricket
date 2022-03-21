@@ -14,7 +14,7 @@ function BottomTabNavigation() {
     <Tab.Navigator
       initialRouteName="Feed"
       activeColor={colors.accent}
-      inactiveColor={colors.black}
+      inactiveColor={colors.surface}
       barStyle={{backgroundColor: colors.primary}}>
       <Tab.Screen
         name="Feed"

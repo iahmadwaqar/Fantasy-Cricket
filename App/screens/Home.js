@@ -1,7 +1,7 @@
 import React from 'react';
 import {Dimensions, StyleSheet, View} from 'react-native';
 
-import AppBarComponent from '../components/AppBar';
+import AppBarComponent from '../components/AppBarComponent';
 import CarouselCard from '../components/homeScreen/CarouselCards';
 import News from '../components/homeScreen/News';
 

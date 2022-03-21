@@ -1,7 +1,7 @@
 export default {
   // Colors
 
-  primary: '#ff6347',
+  primary: '#00bcd4',
   accent: '#3db',
   background: '#fff',
   surface: '#ffdac6',

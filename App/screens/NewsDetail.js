@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import AppBarComponent from '../components/AppBar';
+import AppBarComponent from '../components/AppBarComponent';
 import colors from '../constants/colors';
 
 const NewsDetail = ({navigation, route}) => {

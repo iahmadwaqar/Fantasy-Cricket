@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import colors from '../constants/colors';
+import colors from '../../constants/colors';
 import {Entypo} from '@expo/vector-icons';
 
 export const RowItem = ({title, onPress, icon}) => {

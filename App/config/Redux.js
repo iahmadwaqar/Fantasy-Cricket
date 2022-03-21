@@ -11,10 +11,25 @@ const reducer = (state = initialValue, action) => {
         ...state,
         PlayersData: action.payload,
       };
-    case 'DECREMENT':
+    case 'ADD_PLAYER':
       return {
         ...state,
-        counter: state.counter - 1,
+        selectedPlayers: [
+          ...(state.selectedPlayers ? state.selectedPlayers : []),
+          action.payload,
+        ],
+      };
+    case 'REMOVE_PLAYER':
+      return {
+        ...state,
+        selectedPlayers: state.selectedPlayers.filter(
+          player => player !== action.payload,
+        ),
+      };
+    case 'CLEAR_SELECTED_PLAYERS':
+      return {
+        ...state,
+        selectedPlayers: [],
       };
     default:
       return state;
