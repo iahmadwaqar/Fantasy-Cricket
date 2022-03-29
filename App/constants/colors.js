@@ -14,6 +14,7 @@ export default {
   border: '#E2E2E2',
   shadow: '#000',
 
+  yellow: '#ffeb3b',
   white: '#fff',
   black: '#000',
   grey: '#ccc',

@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {gql, useQuery, NetworkStatus} from '@apollo/client';
+import {gql, useQuery} from '@apollo/client';
 import {View, Text, Alert, StyleSheet} from 'react-native';
 import {useDispatch, useStore} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,10 +10,10 @@ import colors from '../constants/colors';
 
 import matchDetailQuery from '../constants/queries/matchDetailQuery';
 
-import ChoosePlayers from '../components/matchDetailScreen/ChoosePlayers';
-import ChooseLeague from '../components/matchDetailScreen/ChooseLeague';
-import ChooseLogic from '../components/matchDetailScreen/ChooseLogic';
-import ChooseTeam from '../components/matchDetailScreen/ChooseTeam';
+import ChooseLeague from '../components/buildYourTeam/ChooseLeague';
+import ChoosePlayers from '../components/buildYourTeam/ChoosePlayers';
+import ChooseLogic from '../components/buildYourTeam/ChooseLogic';
+import ChooseTeam from '../components/buildYourTeam/ChooseTeam';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -28,9 +28,8 @@ const BuildYourTeam = ({navigation, route}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('Tab Effect');
     const backAction = navigation.addListener('beforeRemove', e => {
-      const selectedPlayers = store.getState().selectedPlayers;
+      const selectedPlayers = store.getState().buildYourTeam?.selectedPlayers;
       if (selectedPlayers?.length > 0) {
         e.preventDefault();
         Alert.alert(
@@ -39,16 +38,13 @@ const BuildYourTeam = ({navigation, route}) => {
           [
             {
               text: 'Cancel',
-              onPress: () => {
-                console.log('Cancel Pressed', selectedPlayers?.length);
-              },
+              onPress: () => {},
               style: 'cancel',
             },
             {
               text: 'OK',
               onPress: () => {
-                console.log('OK Pressed');
-                dispatch({type: 'CLEAR_SELECTED_PLAYERS'});
+                dispatch({type: 'CLEAR_TEAM_BUILD'});
                 navigation.dispatch(e.data.action);
               },
             },
@@ -60,10 +56,8 @@ const BuildYourTeam = ({navigation, route}) => {
       }
     });
 
-    return () => {
-      backAction;
-    };
-  }, [navigation]);
+    return () => backAction;
+  }, []);
 
   const {error, loading, data, refetch, networkStatus} = useQuery(
     MATCH_DETAILS_QUERY,
@@ -84,10 +78,13 @@ const BuildYourTeam = ({navigation, route}) => {
   }
 
   if (data) {
-    // console.log('data');
     dispatch({
       type: 'PLAYERS_LIST',
       payload: data.playerHub,
+    });
+    dispatch({
+      type: 'CHOOSE_MATCH_ID',
+      payload: route.params?.matchID,
     });
   }
 
@@ -95,9 +92,9 @@ const BuildYourTeam = ({navigation, route}) => {
     <>
       <AppBarComponent navigation={navigation} route={route} />
       <Tab.Navigator
+        backBehavior="order"
         screenOptions={{
           lazy: true,
-          tabBarLabelStyle: {fontWeight: '500', color: colors.textWhite},
           swipeEnabled: false,
           tabBarScrollEnabled: true,
           tabBarActiveTintColor: colors.black,
