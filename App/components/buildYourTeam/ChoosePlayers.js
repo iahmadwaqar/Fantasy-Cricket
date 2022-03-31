@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch, useStore} from 'react-redux';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import EventEmitter from 'eventemitter3';
 
 import Animated, {
   useDerivedValue,
@@ -14,49 +15,68 @@ import {
   View,
   ScrollView,
   Image,
-  TouchableOpacity,
   TouchableWithoutFeedback,
-  TouchableHighlight,
   StyleSheet,
-  FlatList,
   ToastAndroid,
   Platform,
   AlertIOS,
 } from 'react-native';
-import {
-  List,
-  Avatar,
-  TouchableRipple,
-  ActivityIndicator,
-  Text,
-  FAB,
-} from 'react-native-paper';
+import {List, ActivityIndicator, Text, FAB} from 'react-native-paper';
 
 import colors from '../../constants/colors';
 
 const Tab = createMaterialTopTabNavigator();
+const eventManager = new EventEmitter();
+
+const displayToast = toastText => {
+  if (Platform.OS === 'android') {
+    ToastAndroid.show(toastText, ToastAndroid.SHORT);
+  } else {
+    AlertIOS.alert(toastText);
+  }
+};
 
 const ChoosePlayers = ({navigation}) => {
   const store = useStore();
+  const [selectedPlayers, setSelectedPlayers] = useState([]);
   console.log('Team Selection Screen');
 
-  const selectedPlayers = store.getState().buildYourTeam?.selectedPlayers;
+  useEffect(() => {
+    eventManager.addListener('playerSelectionChanged', () => {
+      const selectedPlayersInStore =
+        store.getState().buildYourTeam?.selectedPlayers;
+      setSelectedPlayers(selectedPlayersInStore);
+    });
 
-  const numberOfBatsmenSelected = selectedPlayers?.filter(
-    player => player.playerSkill === 'BATSMAN',
-  ).length;
+    return () => {
+      eventManager.removeAllListeners();
+    };
+  });
 
-  const numberOfBowlersSelected = selectedPlayers?.filter(
-    player => player.playerSkill === 'BOWLER',
-  ).length;
+  const countPlayers = () => {
+    const numberOfBatsmenSelected = selectedPlayers?.filter(
+      player => player.playerSkill === 'BATSMAN',
+    ).length;
 
-  const numberOfAllroundersSelected = selectedPlayers?.filter(
-    player => player.playerSkill === 'ALL_ROUNDER',
-  ).length;
+    const numberOfBowlersSelected = selectedPlayers?.filter(
+      player => player.playerSkill === 'BOWLER',
+    ).length;
 
-  const numberOfKeeperSelected = selectedPlayers?.filter(
-    player => player.playerSkill === 'KEEPER',
-  ).length;
+    const numberOfAllroundersSelected = selectedPlayers?.filter(
+      player => player.playerSkill === 'ALL_ROUNDER',
+    ).length;
+
+    const numberOfKeeperSelected = selectedPlayers?.filter(
+      player => player.playerSkill === 'KEEPER',
+    ).length;
+
+    return {
+      numberOfBatsmenSelected,
+      numberOfBowlersSelected,
+      numberOfAllroundersSelected,
+      numberOfKeeperSelected,
+    };
+  };
 
   return (
     <>
@@ -93,7 +113,9 @@ const ChoosePlayers = ({navigation}) => {
         <Tab.Screen
           name="WicketKeeper"
           options={{
-            tabBarBadge: () => <Text>{numberOfKeeperSelected || 0}</Text>,
+            tabBarBadge: () => (
+              <Text>{countPlayers().numberOfKeeperSelected || 0}</Text>
+            ),
             tabBarIcon: ({color, focused}) => {
               return (
                 <Image
@@ -114,7 +136,9 @@ const ChoosePlayers = ({navigation}) => {
         <Tab.Screen
           name="Batsmen"
           options={{
-            tabBarBadge: () => <Text>{numberOfBatsmenSelected || 0}</Text>,
+            tabBarBadge: () => (
+              <Text>{countPlayers().numberOfBatsmenSelected || 0}</Text>
+            ),
             tabBarIcon: ({color, focused}) => {
               return (
                 <Image
@@ -135,7 +159,9 @@ const ChoosePlayers = ({navigation}) => {
         <Tab.Screen
           name="Bollers"
           options={{
-            tabBarBadge: () => <Text>{numberOfBowlersSelected || 0}</Text>,
+            tabBarBadge: () => (
+              <Text>{countPlayers().numberOfBowlersSelected || 0}</Text>
+            ),
             tabBarIcon: ({color, focused}) => {
               return (
                 <Image
@@ -156,7 +182,9 @@ const ChoosePlayers = ({navigation}) => {
         <Tab.Screen
           name="AllRounders"
           options={{
-            tabBarBadge: () => <Text>{numberOfAllroundersSelected || 0}</Text>,
+            tabBarBadge: () => (
+              <Text>{countPlayers().numberOfAllroundersSelected || 0}</Text>
+            ),
             tabBarIcon: ({color, focused}) => {
               return (
                 <Image
@@ -180,47 +208,25 @@ const ChoosePlayers = ({navigation}) => {
         large
         icon="arrow-right"
         onPress={() => {
-          const selectedPlayersCount =
-            store.getState().buildYourTeam?.selectedPlayers;
+          const {
+            numberOfBatsmenSelected,
+            numberOfBowlersSelected,
+            numberOfAllroundersSelected,
+            numberOfKeeperSelected,
+          } = countPlayers();
 
-          if (!selectedPlayersCount || selectedPlayersCount.length === 0) {
-            ToastAndroid.show(
-              'Please select your team first',
-              ToastAndroid.SHORT,
-            );
+          if (!selectedPlayers || selectedPlayers.length === 0) {
+            displayToast('Please select atleast one player');
             return;
           }
-
-          const batsmenCount = selectedPlayersCount?.filter(
-            player => player.playerSkill === 'BATSMAN',
-          ).length;
-
-          const bowlersCount = selectedPlayersCount?.filter(
-            player => player.playerSkill === 'BOWLER',
-          ).length;
-
-          const allRoundersCount = selectedPlayersCount?.filter(
-            player => player.playerSkill === 'ALL_ROUNDER',
-          ).length;
-
-          const keeperCount = selectedPlayersCount?.filter(
-            player => player.playerSkill === 'KEEPER',
-          ).length;
-
-          if (keeperCount < 1) {
-            ToastAndroid.show('You must select 1 Keeper', ToastAndroid.SHORT);
+          if (numberOfKeeperSelected < 1) {
+            displayToast('Please select atleast one keeper');
             return;
-          } else if (batsmenCount + bowlersCount < 5) {
-            ToastAndroid.show(
-              'You must select a total of 5 Batsmen and Bowlers',
-              ToastAndroid.SHORT,
-            );
+          } else if (numberOfBatsmenSelected + numberOfBowlersSelected < 5) {
+            displayToast('You must select a total of 5 Batsmen and Bowlers');
             return;
-          } else if (allRoundersCount < 1) {
-            ToastAndroid.show(
-              'You must select 1 All Rounder',
-              ToastAndroid.SHORT,
-            );
+          } else if (numberOfAllroundersSelected < 1) {
+            displayToast('You must select atleast one AllRounder');
             return;
           }
 
@@ -307,14 +313,6 @@ const Player = ({player}) => {
     };
   });
 
-  const displayToast = toastText => {
-    if (Platform.OS === 'android') {
-      ToastAndroid.show(toastText, ToastAndroid.SHORT);
-    } else {
-      AlertIOS.alert(toastText);
-    }
-  };
-
   const addOrRemovePlayer = playerData => {
     if (isSelected) {
       setIsSelected(false);
@@ -322,6 +320,7 @@ const Player = ({player}) => {
         type: 'REMOVE_TEAM_PLAYER',
         payload: player,
       });
+      eventManager.emit('playerSelectionChanged', playerData);
       return;
     }
 
@@ -383,6 +382,7 @@ const Player = ({player}) => {
         type: 'CHOOSE_TEAM_PLAYER',
         payload: player,
       });
+      eventManager.emit('playerSelectionChanged');
 
       setIsSelected(true);
     }

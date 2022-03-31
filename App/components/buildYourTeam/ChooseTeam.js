@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useStore} from 'react-redux';
 import {useQuery, gql} from '@apollo/client';
+import EventEmitter from 'eventemitter3';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
@@ -21,19 +22,14 @@ const getTeamQuery = gql`
   ${chooseTeamQuery}
 `;
 
+const eventManager = new EventEmitter();
+
 const ChooseTeam = ({navigation}) => {
   const store = useStore();
   const buildYourTeam = store.getState().buildYourTeam;
 
   const teamIdOfFirstPlayer = buildYourTeam.selectedPlayers[0].teamID;
   const [team1Id] = useState(teamIdOfFirstPlayer);
-
-  const [modalVisible, setModalVisible] = useState(false);
-
-  console.log(modalVisible);
-
-  const showModal = () => setModalVisible(!modalVisible);
-  const hideModal = () => setModalVisible(false);
 
   const apiVariables = {
     matchID: buildYourTeam.matchID,
@@ -53,19 +49,23 @@ const ChooseTeam = ({navigation}) => {
     const focusedListener = navigation.addListener('focus', () => {
       refetch();
     });
-    if (modalVisible) {
-      refetch();
-    }
 
-    return focusedListener;
-  }, [modalVisible]);
+    eventManager.addListener('changePlayer', points => {
+      console.log('Points', points);
+    });
+
+    return () => {
+      focusedListener;
+      eventManager.removeAllListeners();
+    };
+  });
 
   if (loading) {
-    console.log(modalVisible);
     return <LoadingIndicator />;
   }
 
   if (error) {
+    console.log(error);
     return <Text>Error...</Text>;
   }
 
@@ -74,14 +74,13 @@ const ChooseTeam = ({navigation}) => {
       style={styles.backgroundContainer}
       source={require('../../assets/images/Ground.jpg')}
       imageStyle={styles.containerImageStyle}>
-      <Text style={{position: 'absolute', color: 'white', right: 0}}>
+      <Text style={styles.totalCreditPoints}>
         Total credits: {data.getFrcTeam.totalPoints}
       </Text>
       <Title style={styles.title}>keeper</Title>
       <View style={styles.playersContainer}>
         {data.getFrcTeam.keeper?.map(player => (
           <SinglePlayer
-            showModal={showModal}
             selectedPlayers={apiVariables.playerIds}
             player={player}
             key={player.playerId}
@@ -93,7 +92,6 @@ const ChooseTeam = ({navigation}) => {
       <View style={styles.playersContainer}>
         {data.getFrcTeam.batsman?.map(player => (
           <SinglePlayer
-            showModal={showModal}
             selectedPlayers={apiVariables.playerIds}
             player={player}
             key={player.playerId}
@@ -105,7 +103,6 @@ const ChooseTeam = ({navigation}) => {
       <View style={styles.playersContainer}>
         {data.getFrcTeam.bowler?.map(player => (
           <SinglePlayer
-            showModal={showModal}
             selectedPlayers={apiVariables.playerIds}
             player={player}
             key={player.playerId}
@@ -117,7 +114,6 @@ const ChooseTeam = ({navigation}) => {
       <View style={styles.playersContainer}>
         {data.getFrcTeam.all_rounder?.map(player => (
           <SinglePlayer
-            showModal={showModal}
             selectedPlayers={apiVariables.playerIds}
             player={player}
             key={player.playerId}
@@ -129,26 +125,50 @@ const ChooseTeam = ({navigation}) => {
   );
 };
 
-const SinglePlayer = ({player, team1Id, selectedPlayers, showModal}) => {
-  const isSelected = selectedPlayers.includes(player.playerId);
+const plaa = {
+  __typename: 'squadPlayer',
+  captain: '0',
+  credits: '8.0',
+  isMyPick: true,
+  playerCredits: '8.0',
+  playerId: '86405',
+  playerName: 'Mandy Mangru',
+  player_role: 'ALL_ROUNDER',
+  playing_xi: null,
+  projectedPoints: '22-59',
+  selectionPercent: '5.83',
+  teamID: '1135',
+  teamName: 'WI-W',
+  vice_captain: '0',
+  totalPoints: '222.0',
+};
 
+const SinglePlayer = ({player, team1Id, selectedPlayers}) => {
   const dispatch = useDispatch();
+
+  const [playerData, setPlayerData] = useState(player);
 
   const [imageError, setImageError] = useState(false);
 
-  const backgroundColor =
-    player.teamID === team1Id ? colors.blue : colors.black;
+  useEffect(() => {
+    eventManager.emit('changePlayer', playerData.totalPoints);
+  }, [playerData]);
 
-  const playerNameArray = player.playerName.split(' ');
+  const isSelected = selectedPlayers.includes(playerData.playerId);
+
+  const backgroundColor =
+    playerData.teamID === team1Id ? colors.blue : colors.black;
+
+  const playerNameArray = playerData.playerName.split(' ');
   const playerFistandLastName = `${
     playerNameArray[0]
   } ${playerNameArray.pop()}`;
 
   return (
     <View style={styles.singlePlayerContainer}>
-      {player.captain !== '0' && <Text style={styles.captainTag}>C</Text>}
+      {playerData.captain !== '0' && <Text style={styles.captainTag}>C</Text>}
 
-      {player.vice_captain !== '0' && (
+      {playerData.vice_captain !== '0' && (
         <Text style={styles.viceCaptainTag}>VC</Text>
       )}
 
@@ -156,15 +176,8 @@ const SinglePlayer = ({player, team1Id, selectedPlayers, showModal}) => {
         <TouchableOpacity
           style={styles.changePlayerContainer}
           onPress={() => {
-            console.log('change player', selectedPlayers[0]);
-            dispatch({
-              type: 'REPLACE_TEAM_PLAYER',
-              payload: {
-                oldPlayer: player,
-                newPlayer: selectedPlayers[0],
-              },
-            });
-            /// showModal();
+            console.log('change player');
+            setPlayerData(plaa);
           }}>
           <Icon name="exchange" size={20} color={colors.white} />
         </TouchableOpacity>
@@ -175,7 +188,7 @@ const SinglePlayer = ({player, team1Id, selectedPlayers, showModal}) => {
         source={
           !imageError
             ? {
-                uri: `https://images.cricket.com/players/${player.playerId}_headshot.png`,
+                uri: `https://images.cricket.com/players/${playerData.playerId}_headshot.png`,
               }
             : require('../../assets/images/Player.png')
         }
@@ -188,7 +201,7 @@ const SinglePlayer = ({player, team1Id, selectedPlayers, showModal}) => {
         {playerFistandLastName}
       </Text>
 
-      <Text style={[styles.playerPoints]}>{player.credits}</Text>
+      <Text style={[styles.playerPoints]}>{playerData.credits}</Text>
     </View>
   );
 };
@@ -235,6 +248,11 @@ const styles = StyleSheet.create({
   containerImageStyle: {
     opacity: 0.3,
     resizeMode: 'stretch',
+  },
+  totalCreditPoints: {
+    position: 'absolute',
+    color: 'white',
+    right: 0,
   },
   title: {
     paddingHorizontal: 10,
