@@ -1,6 +1,7 @@
 // import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
+import SplashScreen from 'react-native-splash-screen';
 
 import PaperProviderWrapper from './config/Theming';
 import ReduxProviderWrapper from './config/Redux';
@@ -12,6 +13,9 @@ const client = new ApolloClient({
 });
 
 const App = () => {
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
   return (
     <ReduxProviderWrapper>
       <ApolloProvider client={client}>
